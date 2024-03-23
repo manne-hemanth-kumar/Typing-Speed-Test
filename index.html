@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap");
+
+.container {
+    background-color: #dac0ff;
+    padding-left: 14px;
+}
+
+.card-container {
+    background-color: #f3eaff;
+    height: auto;
+    width: auto;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid #9aa5b1;
+}
+
+.container-heading {
+    color: #690cb0;
+    font-family: "Roboto";
+    font-weight: bold;
+    padding: 13px;
+}
+
+.description {
+    color: #3e4c59;
+    font-family: "Roboto";
+    font-weight: 700;
+}
+
+.submit-btn {
+    background-color: #f2ebf3;
+}
+
+.reset-btn {
+    background-color: #f2ebf3;
+}
+
+.clock-image {
+    height: 50px;
+}
+
+span {
+    font-size: 40px;
+}
+
+#timer {
+    font-size: 43px;
+}
+    </style>
+</head>
+
+<body>
+    <div class="container p-3">
+        <div class="row">
+            <div id="speedTypingTest" class="col-12">
+                <h1 class="container-heading">Speed Typing Test</h1>
+                <p class="description">On your fingers lets sey Gol</p>
+                <div class="d-flex flex-row">
+                    <img class="clock-image mr-3" src="https://assets.ccbp.in/frontend/dynamic-webapps/clock-img.png" />
+                    <p id="timer">0</p>
+                    <p class="descriptioncml-2 mt-4">Seconds</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card-container">
+                    <p id="quoteDisplay"></p>
+                    <textarea placeholder="Type Here" class="form-control" id="quoteInput" rows="5" cols="20"></textarea>
+                </div>
+                <div class="text-center text-light mt-3">
+                    <div id="Spinner" class="d-none spinner-boarder" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <p id="result"></p>
+                <div>
+                    <button class="btn submit-btn" id="submitBtn" type="submit">Submit</button>
+                    <button class="btn ml-3 reset-btn" id="resetBtn" type="submit">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let timerEl = document.getElementById("timer");
+let resultEl = document.getElementById("result");
+let quoteDisplayEl = document.getElementById("quoteDisplay");
+let quoteInputEl = document.getElementById("quoteInput");
+let submitBtnEl = document.getElementById("submitBtn");
+let resetBtnEl = document.getElementById("resetBtn");
+let spinnerEl = document.getElementById("Spinner");
+let counter = 0;
+
+spinnerEl.classList.add("d-none");
+
+function startCounter() {
+    counter += 1;
+    timerEl.textContent = counter;
+    console.log(counter)
+}
+let counterValue = setInterval(startCounter, 1000);
+
+function getQuote() {
+    let options = {
+        method: "GET"
+    };
+    fetch("https://apis.ccbp.in/random-quote", options)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(jsonData) {
+            spinnerEl.classList.add("d-none");
+
+            let quote = jsonData.content;
+            quoteDisplayEl.textContent = quote;
+            console.log(jsonData.content);
+        });
+}
+getQuote();
+startCounter();
+resetBtnEl.onclick = function() {
+    spinnerEl.classList.remove("d-none");
+    getQuote();
+    startCounter();
+    counter = 0;
+    resultEl.textContent = "";
+    quoteInputEl.value = "";
+};
+submitBtnEl.onclick = function() {
+    if (quoteInputEl.value === quoteDisplayEl.textContent) {
+        clearInterval(counterValue);
+        resultEl.textContent = "You typed In " + counter + " Seconds";
+    } else {
+        resultEl.textContent = "You typed incorrect Sentense";
+    }
+};
+    </script>
+</body>
+
+</html>
